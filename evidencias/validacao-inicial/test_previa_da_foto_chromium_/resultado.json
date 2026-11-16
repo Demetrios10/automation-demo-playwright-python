@@ -1,0 +1,10 @@
+{
+  "scenario": "tests/test_registration.py::test_previa_da_foto[chromium]",
+  "outcome": "failed",
+  "url": "https://demo.automationtesting.in/Register.html",
+  "screenshots": [
+    "01-resultado.png"
+  ],
+  "screenshot_error": null,
+  "details": "registration_page = <pages.register_page.RegisterPage object at 0x00000178B7AD9040>\nphoto = WindowsPath('C:/Users/demet/Documents/Codex/2026-11-07/po/work/automation-demo-playwright-python/data/avatar.png')\n\n    def test_previa_da_foto(registration_page, photo):\n        registration_page.upload_photo(photo)\n>       expect(registration_page.page.locator(\"#imagetrgt\")).to_have_attribute(\n            \"src\", re.compile(r\"^data:image/png;base64,\")\n        )\nE       AssertionError: Locator expected to have attribute 're.compile('^data:image/png;base64,')'\nE       Actual value: original.png \nE       Call log:\nE         - Expect \"to_have_attribute\" with timeout 5000ms\nE         - waiting for locator(\"#imagetrgt\")\nE           14 × locator resolved to <img id=\"imagetrgt\" src=\"original.png\"/>\nE              - unexpected value \"original.png\"\nE       \nE       Aria snapshot:\nE       - img\n\ntests\\test_registration.py:91: AssertionError"
+}

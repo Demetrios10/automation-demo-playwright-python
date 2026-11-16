@@ -1,0 +1,11 @@
+{
+  "scenario": "tests/test_registration.py::test_dados_pessoais[chromium]",
+  "outcome": "passed",
+  "url": "https://demo.automationtesting.in/Register.html",
+  "screenshots": [
+    "01-dados-pessoais.png",
+    "02-resultado.png"
+  ],
+  "screenshot_error": null,
+  "details": null
+}

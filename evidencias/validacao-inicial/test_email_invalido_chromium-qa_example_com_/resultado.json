@@ -1,0 +1,10 @@
+{
+  "scenario": "tests/test_registration.py::test_email_invalido[chromium-qa example.com]",
+  "outcome": "passed",
+  "url": "https://demo.automationtesting.in/Register.html",
+  "screenshots": [
+    "01-resultado.png"
+  ],
+  "screenshot_error": null,
+  "details": null
+}

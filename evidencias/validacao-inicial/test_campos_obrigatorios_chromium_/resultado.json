@@ -1,0 +1,10 @@
+{
+  "scenario": "tests/test_registration.py::test_campos_obrigatorios[chromium]",
+  "outcome": "passed",
+  "url": "https://demo.automationtesting.in/Register.html",
+  "screenshots": [
+    "01-resultado.png"
+  ],
+  "screenshot_error": null,
+  "details": null
+}

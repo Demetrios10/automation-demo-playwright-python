@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="22" time="68.402" timestamp="2026-11-15T23:56:43.577273-03:00" hostname="Demétrios"><testcase classname="tests.test_registration" name="test_formulario_disponivel[chromium]" time="2.962" /><testcase classname="tests.test_registration" name="test_dados_pessoais[chromium]" time="2.765" /><testcase classname="tests.test_registration" name="test_genero_exclusivo[chromium-Male]" time="2.512" /><testcase classname="tests.test_registration" name="test_hobbies_multiplos_e_desmarcacao[chromium]" time="2.943" /><testcase classname="tests.test_registration" name="test_email_invalido[chromium-invalido]" time="2.612" /><testcase classname="tests.test_registration" name="test_telefone_invalido[chromium-123]" time="2.327" /><testcase classname="tests.test_registration" name="test_campos_obrigatorios[chromium]" time="2.499" /><testcase classname="tests.test_registration" name="test_confirmacao_de_senha_divergente[chromium]" time="2.718" /><testcase classname="tests.test_registration" name="test_senha_sem_complexidade[chromium]" time="2.557" /><testcase classname="tests.test_registration" name="test_senha_valida[chromium]" time="2.607" /><testcase classname="tests.test_registration" name="test_upload_foto[chromium]" time="2.215" /><testcase classname="tests.test_registration" name="test_previa_da_foto[chromium]" time="7.115"><failure message="AssertionError: Locator expected to have attribute 're.compile('^data:image/png;base64,')'&#10;Actual value: original.png &#10;Call log:&#10;  - Expect &quot;to_have_attribute&quot; with timeout 5000ms&#10;  - waiting for locator(&quot;#imagetrgt&quot;)&#10;    14 × locator resolved to &lt;img id=&quot;imagetrgt&quot; src=&quot;original.png&quot;/&gt;&#10;       - unexpected value &quot;original.png&quot;&#10;&#10;Aria snapshot:&#10;- img">registration_page = &lt;pages.register_page.RegisterPage object at 0x00000178B7AD9040&gt;
+photo = WindowsPath('C:/Users/demet/Documents/Codex/2026-11-07/po/work/automation-demo-playwright-python/data/avatar.png')
+
+    def test_previa_da_foto(registration_page, photo):
+        registration_page.upload_photo(photo)
+&gt;       expect(registration_page.page.locator("#imagetrgt")).to_have_attribute(
+            "src", re.compile(r"^data:image/png;base64,")
+        )
+E       AssertionError: Locator expected to have attribute 're.compile('^data:image/png;base64,')'
+E       Actual value: original.png 
+E       Call log:
+E         - Expect "to_have_attribute" with timeout 5000ms
+E         - waiting for locator("#imagetrgt")
+E           14 × locator resolved to &lt;img id="imagetrgt" src="original.png"/&gt;
+E              - unexpected value "original.png"
+E       
+E       Aria snapshot:
+E       - img
+
+tests\test_registration.py:91: AssertionError</failure></testcase><testcase classname="tests.test_registration" name="test_data_de_nascimento[chromium]" time="8.346" /><testcase classname="tests.test_registration" name="test_pais_com_busca[chromium]" time="2.828" /><testcase classname="tests.test_registration" name="test_idiomas_multiplos[chromium]" time="3.260" /><testcase classname="tests.test_registration" name="test_refresh_limpa_dados[chromium]" time="2.964" /><testcase classname="tests.test_registration" name="test_cadastro_completo[chromium]" time="3.268"><failure message="pages.register_page.SiteDependencyError: Opção 'India' indisponível em countries: []">registration_page = &lt;pages.register_page.RegisterPage object at 0x00000178B7C972B0&gt;
+photo = WindowsPath('C:/Users/demet/Documents/Codex/2026-11-07/po/work/automation-demo-playwright-python/data/avatar.png')
+evidence = &lt;function evidence.&lt;locals&gt;.capture at 0x00000178B7DAE4B0&gt;
+
+    @pytest.mark.complete
+    def test_cadastro_completo(registration_page, photo, evidence):
+        data = Registration()
+&gt;       registration_page.fill_complete(data, photo)
+
+tests\test_registration.py:125: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;pages.register_page.RegisterPage object at 0x00000178B7C972B0&gt;
+data = Registration(first_name='Alex', last_name='Teste', address='Rua Ficticia, 123', email='qa.a34ab0ad04e2@example.com', p...=('English', 'Portuguese'), skill='Python', country='India', year='1995', month='May', day='15', password='DemoQa123!')
+photo = WindowsPath('C:/Users/demet/Documents/Codex/2026-11-07/po/work/automation-demo-playwright-python/data/avatar.png')
+
+    def fill_complete(self, data: Registration, photo: Path):
+        self.fill_identity(data)
+        self.set_hobbies(data.hobbies)
+        self.set_birth_date(data.year, data.month, data.day)
+        self.set_passwords(data.password, data.password)
+        self.upload_photo(photo)
+        self.select_secondary_country(data.country)
+        self.select_languages(data.languages)
+        self.skill.select_option(label=data.skill)
+        dependencies = self.dependency_status()
+        for name, value in (
+            ("countries", data.country),
+            ("skills", data.skill),
+            ("years", data.year),
+        ):
+            if value not in dependencies[name]:
+&gt;               raise SiteDependencyError(
+                    f"Opção {value!r} indisponível em {name}: {dependencies[name]}"
+                )
+E               pages.register_page.SiteDependencyError: Opção 'India' indisponível em countries: []
+
+pages\register_page.py:121: SiteDependencyError</failure></testcase><testcase classname="tests.test_registration" name="test_genero_exclusivo[chromium-FeMale]" time="2.366" /><testcase classname="tests.test_registration" name="test_email_invalido[chromium-qa@]" time="2.394" /><testcase classname="tests.test_registration" name="test_telefone_invalido[chromium-11987654321]" time="2.297" /><testcase classname="tests.test_registration" name="test_email_invalido[chromium-qa example.com]" time="2.332" /><testcase classname="tests.test_registration" name="test_telefone_invalido[chromium-abcdefghij]" time="2.392" /></testsuite></testsuites>
