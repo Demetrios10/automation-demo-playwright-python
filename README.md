@@ -57,3 +57,7 @@ Cada execução gera `evidencias/execucoes/<data-hora>/<cenario>/`, com capturas
 Veja o [resultado da validação inicial](docs/RESULTADOS.md) e o [plano de testes](docs/PLANO-DE-TESTES.md).
 
 O fluxo do GitHub Actions é manual, para evitar acessos recorrentes desnecessários ao site público. Os resultados e capturas são anexados à execução mesmo quando há falhas.
+
+## Revisão e manutenção
+
+[Revisão de 16/11/2026](evidencias/REVISAO-2026-11-16.md): resultados, mudanças e pendências. Os resultados históricos são preservados; o estado de cada nova execução pode ser consultado na aba **Actions**.
