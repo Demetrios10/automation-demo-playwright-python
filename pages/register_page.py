@@ -103,14 +103,8 @@ class RegisterPage:
         }
 
     def fill_complete(self, data: Registration, photo: Path):
-        self.fill_identity(data)
-        self.set_hobbies(data.hobbies)
-        self.set_birth_date(data.year, data.month, data.day)
-        self.set_passwords(data.password, data.password)
-        self.upload_photo(photo)
-        self.select_secondary_country(data.country)
-        self.select_languages(data.languages)
-        self.skill.select_option(label=data.skill)
+        # Verifique dependências obrigatórias antes de modificar o formulário.
+        # O site pode apresentar uma lista Country vazia, que impede o envio.
         dependencies = self.dependency_status()
         for name, value in (
             ("countries", data.country),
@@ -121,6 +115,15 @@ class RegisterPage:
                 raise SiteDependencyError(
                     f"Opção {value!r} indisponível em {name}: {dependencies[name]}"
                 )
+
+        self.fill_identity(data)
+        self.set_hobbies(data.hobbies)
+        self.set_birth_date(data.year, data.month, data.day)
+        self.set_passwords(data.password, data.password)
+        self.upload_photo(photo)
+        self.select_secondary_country(data.country)
+        self.select_languages(data.languages)
+        self.skill.select_option(label=data.skill)
         self.country.select_option(label=data.country)
 
     def invalid_fields(self) -> list[dict]:
