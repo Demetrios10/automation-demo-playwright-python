@@ -13,11 +13,7 @@ class TestRegistrationDependencies(unittest.TestCase):
         self.data = Registration()
         self.photo = Path("avatar-sintetico.png")
         self.page = object.__new__(RegisterPage)
-        self.page.dependency_status = Mock(return_value={
-            "countries": [self.data.country],
-            "skills": [self.data.skill],
-            "years": [self.data.year],
-        })
+        self.page.dependency_status = Mock(return_value=self._dependencies())
         self.operations = (
             "fill_identity",
             "set_hobbies",
@@ -32,16 +28,25 @@ class TestRegistrationDependencies(unittest.TestCase):
         self.page.skill = Mock()
         self.page.country = Mock()
 
+    def _dependencies(self, missing: str | None = None) -> dict[str, list[str]]:
+        available = {
+            "countries": [self.data.country],
+            "skills": [self.data.skill],
+            "years": [self.data.year],
+        }
+        return {
+            key: [] if key == missing else values for key, values in available.items()
+        }
+
+    def _reset_operations(self):
+        for operation in self.operations:
+            getattr(self.page, operation).reset_mock()
+
     def test_opcoes_obrigatorias_inexistentes_falham_sem_preenchimento(self):
         for missing in ("countries", "skills", "years"):
             with self.subTest(missing=missing):
-                for operation in self.operations:
-                    getattr(self.page, operation).reset_mock()
-                current = self.page.dependency_status.return_value
-                self.page.dependency_status.return_value = {
-                    key: ([] if key == missing else values)
-                    for key, values in current.items()
-                }
+                self._reset_operations()
+                self.page.dependency_status.return_value = self._dependencies(missing)
 
                 with self.assertRaisesRegex(SiteDependencyError, missing):
                     self.page.fill_complete(self.data, self.photo)
@@ -50,23 +55,14 @@ class TestRegistrationDependencies(unittest.TestCase):
                     getattr(self.page, operation).assert_not_called()
                 self.page.country.select_option.assert_not_called()
                 self.page.skill.select_option.assert_not_called()
-                self.page.dependency_status.return_value = {
-                    "countries": [self.data.country],
-                    "skills": [self.data.skill],
-                    "years": [self.data.year],
-                }
 
     def test_opcoes_disponiveis_permite_preenchimento_normal(self):
         self.page.fill_complete(self.data, self.photo)
 
         self.page.fill_identity.assert_called_once_with(self.data)
         self.page.upload_photo.assert_called_once_with(self.photo)
-        self.page.country.select_option.assert_called_once_with(
-            label=self.data.country
-        )
-        self.page.skill.select_option.assert_called_once_with(
-            label=self.data.skill
-        )
+        self.page.country.select_option.assert_called_once_with(label=self.data.country)
+        self.page.skill.select_option.assert_called_once_with(label=self.data.skill)
 
 
 if __name__ == "__main__":
