@@ -58,6 +58,8 @@ Veja o [resultado da validação inicial](docs/RESULTADOS.md) e o [plano de test
 
 O fluxo do GitHub Actions é manual, para evitar acessos recorrentes desnecessários ao site público. Os resultados e capturas são anexados à execução mesmo quando há falhas.
 
-## Revisão e manutenção
+## Revisão e autoria
 
-[Revisão de 16/11/2026](evidencias/REVISAO-2026-11-16.md): resultados, mudanças e pendências. Os resultados históricos são preservados; o estado de cada nova execução pode ser consultado na aba **Actions**.
+Última revisão registrada em [16/11/2026](evidencias/REVISAO-2026-11-16.md). O resultado de cada nova execução fica na aba **Actions**.
+
+**Demétrios Alves da Silva** · QA Analyst · [Portfólio](https://github.com/Demetrios10/Demetrios10/blob/main/PORTFOLIO.md) · [LinkedIn](https://www.linkedin.com/in/demetriosalvess)
