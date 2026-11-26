@@ -17,8 +17,18 @@ class TestRegistrationData(unittest.TestCase):
     def test_tipos_validos(self):
         record = Registration()
         fields = (
-            "first_name", "last_name", "address", "email", "phone",
-            "gender", "skill", "country", "year", "month", "day", "password",
+            "first_name",
+            "last_name",
+            "address",
+            "email",
+            "phone",
+            "gender",
+            "skill",
+            "country",
+            "year",
+            "month",
+            "day",
+            "password",
         )
         for field in fields:
             with self.subTest(field=field):

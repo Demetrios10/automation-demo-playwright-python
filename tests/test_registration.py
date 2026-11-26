@@ -7,10 +7,14 @@ from playwright.sync_api import expect
 
 from data.registration import Registration
 
+VALID_PASSWORD = Registration.password
+MIN_REQUIRED_FIELDS = 6
+SUBMIT_TIMEOUT_MS = 20_000
+
 
 def test_formulario_disponivel(registration_page):
     expect(registration_page.first_name).to_be_visible()
-    expect(registration_page.page.locator("#submitbtn")).to_be_visible()
+    expect(registration_page.submit_button).to_be_visible()
 
 
 def test_dados_pessoais(registration_page, evidence):
@@ -21,26 +25,27 @@ def test_dados_pessoais(registration_page, evidence):
     expect(registration_page.address).to_have_value(data.address)
     expect(registration_page.email).to_have_value(data.email)
     expect(registration_page.phone).to_have_value(data.phone)
-    expect(registration_page.form.locator('input[value="Male"]')).to_be_checked()
+    expect(registration_page.gender_radio(data.gender)).to_be_checked()
     evidence("dados-pessoais")
 
 
 @pytest.mark.parametrize("gender", ["Male", "FeMale"])
 def test_genero_exclusivo(registration_page, gender):
-    form = registration_page.form
-    form.locator(f'input[type="radio"][value="{gender}"]').check()
-    expect(form.locator('input[type="radio"]:checked')).to_have_count(1)
-    expect(form.locator(f'input[value="{gender}"]')).to_be_checked()
+    registration_page.gender_radio(gender).check()
+    checked = registration_page.form.locator('input[type="radio"]:checked')
+    expect(checked).to_have_count(1)
+    expect(registration_page.gender_radio(gender)).to_be_checked()
 
 
 def test_hobbies_multiplos_e_desmarcacao(registration_page):
+    hobby = registration_page.hobby_checkbox
     registration_page.set_hobbies(("Movies", "Hockey"))
-    expect(registration_page.page.locator("#checkbox2")).to_be_checked()
-    expect(registration_page.page.locator("#checkbox3")).to_be_checked()
+    expect(hobby("Movies")).to_be_checked()
+    expect(hobby("Hockey")).to_be_checked()
     registration_page.set_hobbies(("Cricket",))
-    expect(registration_page.page.locator("#checkbox1")).to_be_checked()
-    expect(registration_page.page.locator("#checkbox2")).not_to_be_checked()
-    expect(registration_page.page.locator("#checkbox3")).not_to_be_checked()
+    expect(hobby("Cricket")).to_be_checked()
+    expect(hobby("Movies")).not_to_be_checked()
+    expect(hobby("Hockey")).not_to_be_checked()
 
 
 @pytest.mark.parametrize("value", ["invalido", "qa@", "qa example.com"])
@@ -59,11 +64,11 @@ def test_campos_obrigatorios(registration_page):
     registration_page.submit()
     assert registration_page.first_name.evaluate("e => e.validity.valueMissing")
     expect(registration_page.page).to_have_url(re.compile(r"Register\.html"))
-    assert len(registration_page.invalid_fields()) >= 6
+    assert len(registration_page.invalid_fields()) >= MIN_REQUIRED_FIELDS
 
 
 def test_confirmacao_de_senha_divergente(registration_page):
-    registration_page.set_passwords("DemoQa123!", "Diferente123!")
+    registration_page.set_passwords(VALID_PASSWORD, "Diferente123!")
     assert registration_page.confirm_password.evaluate("e => e.validity.customError")
     expect(registration_page.confirm_password).to_have_js_property(
         "validationMessage", "Passwords dont match"
@@ -76,7 +81,7 @@ def test_senha_sem_complexidade(registration_page):
 
 
 def test_senha_valida(registration_page):
-    registration_page.set_passwords("DemoQa123!", "DemoQa123!")
+    registration_page.set_passwords(VALID_PASSWORD, VALID_PASSWORD)
     assert registration_page.password.evaluate("e => e.validity.valid")
     assert registration_page.confirm_password.evaluate("e => e.validity.valid")
 
@@ -88,7 +93,7 @@ def test_upload_foto(registration_page, photo):
 
 def test_previa_da_foto(registration_page, photo):
     registration_page.upload_photo(photo)
-    expect(registration_page.page.locator("#imagetrgt")).to_have_attribute(
+    expect(registration_page.photo_preview).to_have_attribute(
         "src", re.compile(r"^data:image/png;base64,")
     )
 
@@ -102,18 +107,19 @@ def test_data_de_nascimento(registration_page):
 
 def test_pais_com_busca(registration_page):
     registration_page.select_secondary_country("India")
-    expect(registration_page.page.locator("#country")).to_have_value("India")
+    expect(registration_page.secondary_country).to_have_value("India")
 
 
 def test_idiomas_multiplos(registration_page):
-    registration_page.select_languages(("English", "Portuguese"))
-    expect(registration_page.page.locator("#msdd")).to_contain_text("English")
-    expect(registration_page.page.locator("#msdd")).to_contain_text("Portuguese")
+    languages = ("English", "Portuguese")
+    registration_page.select_languages(languages)
+    for language in languages:
+        expect(registration_page.languages).to_contain_text(language)
 
 
 def test_refresh_limpa_dados(registration_page):
     registration_page.fill_identity(Registration())
-    registration_page.set_passwords("DemoQa123!", "DemoQa123!")
+    registration_page.set_passwords(VALID_PASSWORD, VALID_PASSWORD)
     registration_page.refresh()
     expect(registration_page.email).to_have_value("")
     expect(registration_page.password).to_have_value("")
@@ -130,6 +136,6 @@ def test_cadastro_completo(registration_page, photo, evidence):
     registration_page.submit()
     # Só considera sucesso quando a navegação real esperada acontece.
     expect(registration_page.page).to_have_url(
-        re.compile(r"WebTable\.html"), timeout=20000
+        re.compile(r"WebTable\.html"), timeout=SUBMIT_TIMEOUT_MS
     )
     evidence("apos-envio")
